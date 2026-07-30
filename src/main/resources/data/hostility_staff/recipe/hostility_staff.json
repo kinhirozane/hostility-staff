@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "key": {
+        "O": "#minecraft:skulls",
+        "#": "minecraft:dragon_breath",
+        "X": "#hostility_staff:war_crimson",
+        "I": "#minecraft:pale_oak_logs"
+    },
+    "pattern": [
+        " XO",
+        " #X",
+        "I  "
+    ],
+    "result": {
+        "id": "hostility_staff:hostility_staff"
+    }
+}

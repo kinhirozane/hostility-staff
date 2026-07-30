@@ -1,0 +1,6 @@
+{
+    "parent": "minecraft:item/handheld",
+    "textures": {
+        "layer0": "hostility_staff:item/hostility_staff"
+    }
+}

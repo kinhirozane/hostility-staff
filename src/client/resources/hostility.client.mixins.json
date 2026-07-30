@@ -1,0 +1,21 @@
+{
+    "required": true,
+    "package": "com.kinhiro.hostility.mixin.client",
+    "compatibilityLevel": "JAVA_25",
+    "client": [
+        "HostilityComponentRenderUtils",
+        "HostilityFont",
+        "HostilityFont$HostilityPreparedTextBuilder",
+        "HostilityMinecraft",
+        "HostilityMouseHandler",
+        "HostilityRenderSystem",
+        "MixinDebugRenderer",
+        "MixinRenderPipelines"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "overwrites": {
+        "requireAnnotations": true
+    }
+}

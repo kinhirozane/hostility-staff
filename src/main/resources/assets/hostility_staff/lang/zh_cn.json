@@ -1,0 +1,23 @@
+{
+    "itemGroup.hostility_staff": "敌意之杖",
+    "gui.hostility_staff.area_selector": "区域选择器",
+    "gui.hostility_staff.area_selector.description": "选择区域内的所有生物作为攻击方。",
+    "gui.hostility_staff.corner_mode": "区域选择器 - 角点模式",
+    "gui.hostility_staff.corner_mode.description": "区域选择器：角点模式（右键两个方块建立选区）。",
+    "gui.hostility_staff.expand_mode": "区域选择器 - 扩展模式",
+    "gui.hostility_staff.expand_mode.description": "区域选择器: 扩展模式 (通过鼠标滚轮进行交互式选区)。",
+    "gui.hostility_staff.skill": "毁灭天灾",
+    "gui.hostility_staff.skill.description": "领域内的所有生物混乱血战，直至仅剩最后一个存活。",
+    "item.hostility_staff.hostility_staff": "敌意之杖",
+    "message.hostility_staff.add": "敌意侵袭：",
+    "message.hostility_staff.reset": "重置敌意",
+    "tooltip.hostility_staff.corner_mode": "§9§l左键 §e两个方块建立选区",
+    "tooltip.hostility_staff.enabled_features": "已开启功能列表：",
+    "tooltip.hostility_staff.expand_mode.1": "§9§l左键 §e放置角点开启交互式选区",
+    "tooltip.hostility_staff.expand_mode.2": "§9§l鼠标滚轮 §e调整选区大小",
+    "tooltip.hostility_staff.expand_mode.3": "§9§l鼠标中键 §e切换角点",
+    "tooltip.hostility_staff.left_click": "§9§l左键 §e两个生物互相攻击",
+    "tooltip.hostility_staff.right_click": "§9§l右键 §e重置状态",
+    "tooltip.hostility_staff.shift_right_click": "§9§lShift + 右键 §e打开配置界面",
+    "tooltip.hostility_staff.unleash_skill": "§9§l左键 §e生物或方块释放 "
+}

@@ -1,0 +1,46 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - "**"
+
+    tags:
+      - "**"
+
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Project
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Format Check
+        run: ./gradlew spotlessCheck
+
+      - name: Build Project
+        run: ./gradlew build
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            build/libs/*.jar

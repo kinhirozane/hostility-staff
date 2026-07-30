@@ -1,0 +1,23 @@
+{
+    "itemGroup.hostility_staff": "Hostility Staff",
+    "gui.hostility_staff.area_selector": "Area Selector",
+    "gui.hostility_staff.area_selector.description": "Select mobs within an area as attackers.",
+    "gui.hostility_staff.corner_mode": "Area Selector - Corner Mode",
+    "gui.hostility_staff.corner_mode.description": "Area Selector: Corner Mode (Right-click two blocks to create a selection).",
+    "gui.hostility_staff.expand_mode": "Area Selector - Expand Mode",
+    "gui.hostility_staff.expand_mode.description": "Area Selector: Expand Mode (Adjust the selection interactively using the mouse wheel).",
+    "gui.hostility_staff.skill": "Calamity of Destruction",
+    "gui.hostility_staff.skill.description": "All mobs within the domain are driven into a chaotic slaughter, fighting until only one survivor remains.",
+    "item.hostility_staff.hostility_staff": "Hostility Staff",
+    "message.hostility_staff.add": "Hostility Invasion: ",
+    "message.hostility_staff.reset": "Reset Hostility",
+    "tooltip.hostility_staff.corner_mode": "§9§lRight-click §etwo blocks to create a selection",
+    "tooltip.hostility_staff.enabled_features": "Enabled Features: ",
+    "tooltip.hostility_staff.expand_mode.1": "§9§lLeft-click §eto place a corner point and start interactive selection",
+    "tooltip.hostility_staff.expand_mode.2": "§9§lScroll §eto adjust the selection size",
+    "tooltip.hostility_staff.expand_mode.3": "§9§lMiddle-click §eto switch corner points",
+    "tooltip.hostility_staff.left_click": "§9§lLeft-click §etwo mobs to make them attack each other",
+    "tooltip.hostility_staff.right_click": "§9ClRight-click §eto reset the status",
+    "tooltip.hostility_staff.shift_right_click": "§9§lShift + Right-click §eto open configuration screen",
+    "tooltip.hostility_staff.unleash_skill": "§9§lLeft-click §emob or block to unleash "
+}

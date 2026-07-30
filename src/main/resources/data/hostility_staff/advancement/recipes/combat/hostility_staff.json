@@ -1,0 +1,32 @@
+{
+    "parent": "minecraft:recipes/root",
+    "criteria": {
+        "has_war_crimson": {
+            "conditions": {
+                "items": [
+                    {
+                        "items": "#hostility_staff:war_crimson"
+                    }
+                ]
+            },
+            "trigger": "minecraft:inventory_changed"
+        },
+        "has_the_recipe": {
+            "conditions": {
+                "recipe": "hostility_staff:hostility_staff"
+            },
+            "trigger": "minecraft:recipe_unlocked"
+        }
+    },
+    "requirements": [
+        [
+            "has_the_recipe",
+            "has_war_crimson"
+        ]
+    ],
+    "rewards": {
+        "recipes": [
+            "hostility_staff:hostility_staff"
+        ]
+    }
+}

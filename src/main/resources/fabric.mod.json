@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "${namespace}",
+	"version": "${version}",
+	"name": "${name}",
+	"description": "${description}",
+	"authors": [
+		"${authors}"
+	],
+	"contact": {
+		"homepage": "${homepage}",
+		"sources": "${issue}"
+	},
+	"license": "${license}",
+	"icon": "assets/hostility_staff/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+            "com.kinhiro.hostility.HostilityStaff"
+		],
+		"client": [
+            "com.kinhiro.hostility.client.HostilityClient"
+		]
+	},
+	"mixins": [
+        "hostility_staff.mixins.json",
+		{
+			"config": "hostility.client.mixins.json",
+			"environment": "client"
+		}
+	],
+    "accessWidener": "hostility_staff.classtweaker",
+	"depends": {
+		"fabricloader": ">=${loader}",
+		"minecraft": "~${minecraft}",
+		"java": ">=${java}"
+	}
+}
