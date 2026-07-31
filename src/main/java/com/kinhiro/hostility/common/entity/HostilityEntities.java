@@ -35,8 +35,12 @@ public final class HostilityEntities {
     public static final ResourceKey<EntityType<?>> MAGIC_CIRCLE_KEY =
         ResourceKey.create(Registries.ENTITY_TYPE, HostilityStaff.id("magic_circle"));
 
+    public static final ResourceKey<EntityType<?>> PREVIEW_HOSTILITY_KEY =
+        ResourceKey.create(Registries.ENTITY_TYPE, HostilityStaff.id("preview_hostility"));
+
     public static EntityType<Hostility> HOSTILITY;
     public static EntityType<MagicCircle> MAGIC_CIRCLE;
+    public static EntityType<PreviewHostility> PREVIEW_HOSTILITY;
 
     public static void initialize() {
     }

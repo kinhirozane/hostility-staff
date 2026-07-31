@@ -36,14 +36,12 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public final class MagicCircle extends Entity {
@@ -52,7 +50,6 @@ public final class MagicCircle extends Entity {
 
     public UUID owner;
     private final List<Mob> trackedMobs = new ArrayList<>();
-    private final Set<UUID> hostedMobs = new HashSet<>();
     private int lifetime = 20;
 
     public MagicCircle(final EntityType<MagicCircle> type, final Level level) {
@@ -64,21 +61,7 @@ public final class MagicCircle extends Entity {
         this(HostilityEntities.MAGIC_CIRCLE, level);
         snapTo(pos);
         if (trackedMobs.isEmpty()) {
-            final var radius = (float) entityData.get(DATA_RADIUS);
-            final var aabb = new AABB(
-                pos.x - radius,
-                pos.y - radius,
-                pos.z - radius,
-                pos.x + radius,
-                pos.y + radius,
-                pos.z + radius
-            );
-
-            final var mobs = level.getEntities(null, aabb).stream()
-                .filter(entity -> entity instanceof Mob)
-                .map(entity -> (Mob) entity)
-                .toList();
-
+            final var mobs = Targeting.findAll(level, pos, (float) entityData.get(DATA_RADIUS));
             trackedMobs.addAll(mobs);
             randomlyAssignTargets(trackedMobs);
         }
@@ -98,37 +81,11 @@ public final class MagicCircle extends Entity {
             if (trackedMobs.size() > 1) lifetime = 20;
             if (lifetime > 0) lifetime--;
             if (lifetime <= 0) discard();
-            final var pos = position();
             final var radius = (float) entityData.get(DATA_RADIUS);
-            final var aabb = new AABB(
-                pos.x - radius, pos.y - radius, pos.z - radius,
-                pos.x + radius, pos.y + radius, pos.z + radius
-            );
-
-            final var newMobs = level().getEntities(null, aabb).stream()
-                .filter(e -> e instanceof Mob)
-                .map(e -> (Mob) e)
-                .filter(m -> !trackedMobs.contains(m))
-                .toList();
-
-            trackedMobs.removeIf(m -> {
-                if (!m.isAlive() || m.isRemoved()) {
-                    hostedMobs.remove(m.getUUID());
-                    return true;
-                }
-
-                return false;
-            });
-
-            trackedMobs.addAll(newMobs);
+            final var newMobs = Targeting.findAll(level(), position(), radius);
+            trackedMobs.removeIf(m -> !m.isAlive() || m.isRemoved());
+            trackedMobs.addAll(newMobs.stream().filter(m -> !trackedMobs.contains(m)).toList());
             randomlyAssignTargets(trackedMobs);
-            trackedMobs.forEach(mob -> {
-                final var forcedTarget = ((Targetable) mob).hostility_staff$forcedTarget();
-                if (forcedTarget != null || mob.getTarget() != null) {
-                    if (hostedMobs.add(mob.getUUID()))
-                        level().addFreshEntity(new Hostility(level(), mob.position(), mob));
-                } else hostedMobs.remove(mob.getUUID());
-            });
         }
     }
 
@@ -136,8 +93,12 @@ public final class MagicCircle extends Entity {
         final var unassigned = new ArrayList<>(mobs);
         unassigned.removeIf(m -> m.getTarget() != null || ((Targetable) m).hostility_staff$forcedTarget() != null);
         for (final var mob : unassigned) {
-            final var target = mobs.get(random.nextInt(mobs.size()));
-            if (target == mob) continue;
+            final var target = mobs.stream()
+                .filter(m -> m != mob)
+                .min(Comparator.comparingDouble(mob::distanceToSqr))
+                .orElse(null);
+
+            if (target == null) continue;
             Targeting.setAttackTarget(mob, target, false);
         }
     }

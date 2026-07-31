@@ -46,7 +46,7 @@ public final class HostilityRenderPipelines {
         .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX)
         .withPrimitiveTopology(PrimitiveTopology.QUADS)
         .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
-        .withDepthStencilState(new DepthStencilState(CompareOp.ALWAYS_PASS, false))
+        .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
         .withCull(false)
         .build();
 
@@ -58,8 +58,8 @@ public final class HostilityRenderPipelines {
         .withBindGroupLayout(HOSTILITY_GLOBALS)
         .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX)
         .withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
-        .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
-        .withDepthStencilState(new DepthStencilState(CompareOp.ALWAYS_PASS, false))
+        .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+        .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
         .withCull(false)
         .build();
 
@@ -71,8 +71,8 @@ public final class HostilityRenderPipelines {
         .withBindGroupLayout(HOSTILITY_GLOBALS)
         .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
         .withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
-        .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
-        .withDepthStencilState(new DepthStencilState(CompareOp.ALWAYS_PASS, false))
+        .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+        .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
         .withCull(false)
         .build();
 }

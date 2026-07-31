@@ -21,9 +21,11 @@ const vec3 COLORS[8] = vec3[](
     vec3(1.000, 0.361, 0.227)
 );
 
+const float ALPHA_EPSILON = 0.01;
+
 void main() {
     vec4 mask = texture(Sampler0, texCoord);
-    if (mask.a < 0.01) discard;
+    if (mask.a < ALPHA_EPSILON) discard;
     float t = clamp(texCoord.x * 0.6 + texCoord.y * 0.4 + sin(time * 3.0) * 0.3, 0.0, 1.0);
     float fi = t * 7.0;
     int i0 = int(fi);

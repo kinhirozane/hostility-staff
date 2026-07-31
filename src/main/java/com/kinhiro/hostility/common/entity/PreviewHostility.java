@@ -21,21 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.kinhiro.hostility.client;
+package com.kinhiro.hostility.common.entity;
 
-import com.kinhiro.hostility.client.network.ClientNetworkHandler;
-import com.kinhiro.hostility.client.renderer.entity.HostilityRenderer;
-import com.kinhiro.hostility.client.renderer.entity.MagicCircleRenderer;
-import com.kinhiro.hostility.common.entity.HostilityEntities;
-import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
-public class HostilityClient implements ClientModInitializer {
+public final class PreviewHostility extends Hostility {
+    public PreviewHostility(final EntityType<PreviewHostility> type, final Level level) {
+        super(type, level);
+        noPhysics = true;
+    }
+
+    public PreviewHostility(final Level level, final Vec3 pos, final Mob owner) {
+        this(HostilityEntities.PREVIEW_HOSTILITY, level);
+        this.owner = owner;
+        snapTo(pos.x, pos.y + owner.getBbHeight() * 1.5d, pos.z);
+        entityData.set(DATA_SIZE, owner.getBbHeight());
+    }
+
     @Override
-    public void onInitializeClient() {
-        ClientNetworkHandler.initialize();
-        EntityRenderers.register(HostilityEntities.HOSTILITY, HostilityRenderer::new);
-        EntityRenderers.register(HostilityEntities.MAGIC_CIRCLE, MagicCircleRenderer::new);
-        EntityRenderers.register(HostilityEntities.PREVIEW_HOSTILITY, HostilityRenderer::new);
+    protected boolean shouldDiscard() {
+        return false;
     }
 }

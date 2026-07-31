@@ -52,4 +52,11 @@ public final class HostilityRenderTypes {
         "magic_circle_cylinder",
         RenderSetup.builder(HostilityRenderPipelines.MAGIC_CIRCLE_CYLINDER).createRenderSetup()
     );
+
+    public static boolean isHostility(final RenderType renderType) {
+        final var pipeline = renderType.pipeline();
+        return pipeline == HostilityRenderPipelines.HOSTILITY
+            || pipeline == HostilityRenderPipelines.MAGIC_CIRCLE
+            || pipeline == HostilityRenderPipelines.MAGIC_CIRCLE_CYLINDER;
+    }
 }

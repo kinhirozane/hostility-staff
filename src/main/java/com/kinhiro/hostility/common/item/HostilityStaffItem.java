@@ -28,8 +28,8 @@ import com.kinhiro.hostility.common.component.AreaPosition;
 import com.kinhiro.hostility.common.component.HostilityDataComponents;
 import com.kinhiro.hostility.common.component.TargetUuid;
 import com.kinhiro.hostility.common.component.TargetUuidList;
-import com.kinhiro.hostility.common.entity.Hostility;
 import com.kinhiro.hostility.common.entity.MagicCircle;
+import com.kinhiro.hostility.common.entity.PreviewHostility;
 import com.kinhiro.hostility.common.network.ClientboundClearSelectionPayload;
 import com.kinhiro.hostility.common.network.ClientboundOpenHostilityStaffScreenPayload;
 import com.kinhiro.hostility.util.Targeting;
@@ -111,17 +111,13 @@ public final class HostilityStaffItem extends Item {
             if (uuidList != null && !uuidList.uuids().isEmpty()) {
                 for (final var uuid : uuidList.uuids()) {
                     final var mob = Targeting.tryFromUuid(player.level(), uuid);
-                    if (mob != null && mob != target) {
+                    if (mob != null && mob != target)
                         Targeting.setAttackTarget(mob, target, false);
-                        final var hostility = new Hostility(player.level(), mob.position(), mob);
-                        player.level().addFreshEntity(hostility);
-                    }
                 }
 
-                final var hostility = new Hostility(player.level(), target.position(), target);
-                player.level().addFreshEntity(hostility);
                 stack.remove(HostilityDataComponents.TARGET_UUID_LIST);
                 stack.remove(HostilityDataComponents.AREA_POSITION);
+                clearPreviewHostility(player.level(), player, null);
                 if (player instanceof final ServerPlayer serverPlayer) ServerPlayNetworking.send(
                     serverPlayer,
                     new ClientboundClearSelectionPayload(serverPlayer.getId())
@@ -135,20 +131,15 @@ public final class HostilityStaffItem extends Item {
                 final var storedTarget = Targeting.tryFromUuid(player.level(), targetUuid.uuid().get());
                 if (target != storedTarget) {
                     Targeting.setAttackTarget(target, storedTarget, true);
-                    final var hostility1 = new Hostility(player.level(), target.position(), target);
-                    player.level().addFreshEntity(hostility1);
-                    if (storedTarget != null) {
-                        final var hostility2 = new Hostility(player.level(), storedTarget.position(), storedTarget);
-                        player.level().addFreshEntity(hostility2);
-                    }
-
                     stack.remove(HostilityDataComponents.TARGET_UUID);
+                    clearPreviewHostility(player.level(), player, storedTarget);
                     return true;
                 }
             } else {
                 final var uuid = Optional.of(target.getUUID());
                 final var name = Optional.of(target.getName());
                 stack.set(HostilityDataComponents.TARGET_UUID, new TargetUuid(uuid, name));
+                addPreviewHostility(player.level(), target);
                 final var message = Component.empty();
                 message.append(TextEffect.hostility(Component.translatable("message.hostility_staff.add"), false, false));
                 message.append(TextEffect.hostility(target.getName(), true, true));
@@ -196,12 +187,6 @@ public final class HostilityStaffItem extends Item {
         final var targetUuid = stack.get(HostilityDataComponents.TARGET_UUID);
         if (targetUuid != null) {
             stack.remove(HostilityDataComponents.TARGET_UUID);
-            if (targetUuid.uuid().isPresent()) {
-                player.level().getEntities(null, player.getBoundingBox().inflate(128d)).stream()
-                    .filter(e -> e instanceof Hostility)
-                    .forEach(Entity::discard);
-            }
-
             player.sendOverlayMessage(
                 TextEffect.hostility(Component.translatable("message.hostility_staff.reset"), false, false)
             );
@@ -210,17 +195,12 @@ public final class HostilityStaffItem extends Item {
         final var targetUuidList = stack.get(HostilityDataComponents.TARGET_UUID_LIST);
         if (targetUuidList != null) {
             stack.remove(HostilityDataComponents.TARGET_UUID_LIST);
-            if (!targetUuidList.uuids().isEmpty()) {
-                player.level().getEntities(null, player.getBoundingBox().inflate(128d)).stream()
-                    .filter(e -> e instanceof Hostility)
-                    .forEach(Entity::discard);
-            }
-
             player.sendOverlayMessage(
                 TextEffect.hostility(Component.translatable("message.hostility_staff.reset"), false, false)
             );
         }
 
+        clearPreviewHostility(level, player, null);
         return InteractionResult.SUCCESS;
     }
 
@@ -252,15 +232,14 @@ public final class HostilityStaffItem extends Item {
                 if (update) {
                     stack.set(HostilityDataComponents.AREA_POSITION, area);
                     final var aabb = Targeting.getBoundingBoxSelectedArea(area.from(), area.to());
-                    final var uuids = context.getLevel().getEntities(null, aabb).stream()
+                    final var mobs = context.getLevel().getEntities(null, aabb).stream()
                         .filter(m -> m instanceof Mob)
-                        .map(e -> {
-                            final var mob = (Mob) e;
-                            final var hostility = new Hostility(context.getLevel(), mob.position(), mob);
-                            context.getLevel().addFreshEntity(hostility);
-                            return mob.getUUID();
-                        })
+                        .map(m -> (Mob) m)
                         .toList();
+
+                    clearPreviewHostility(context.getLevel(), context.getPlayer(), null);
+                    mobs.forEach(mob -> addPreviewHostility(context.getLevel(), mob));
+                    final var uuids = mobs.stream().map(Entity::getUUID).toList();
 
                     stack.set(HostilityDataComponents.TARGET_UUID_LIST, new TargetUuidList(uuids));
                     final var message = Component.empty();
@@ -381,6 +360,16 @@ public final class HostilityStaffItem extends Item {
         @NonNull final LivingEntity owner
     ) {
         return false;
+    }
+
+    private static void addPreviewHostility(final Level level, final Mob mob) {
+        level.addFreshEntity(new PreviewHostility(level, mob.position(), mob));
+    }
+
+    private static void clearPreviewHostility(final Level level, final Player player, final @Nullable Mob owner) {
+        level.getEntities(null, player.getBoundingBox().inflate(128d)).stream()
+            .filter(e -> e instanceof final PreviewHostility marker && (owner == null || marker.owner == owner))
+            .forEach(Entity::discard);
     }
 
     public static void checkStatus(final ItemStack stack) {

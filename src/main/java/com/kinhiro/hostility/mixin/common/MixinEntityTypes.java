@@ -26,6 +26,7 @@ package com.kinhiro.hostility.mixin.common;
 import com.kinhiro.hostility.common.entity.Hostility;
 import com.kinhiro.hostility.common.entity.HostilityEntities;
 import com.kinhiro.hostility.common.entity.MagicCircle;
+import com.kinhiro.hostility.common.entity.PreviewHostility;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -63,6 +64,17 @@ public abstract class MixinEntityTypes {
         HostilityEntities.MAGIC_CIRCLE = register(
             HostilityEntities.MAGIC_CIRCLE_KEY,
             EntityType.Builder.<MagicCircle>of(MagicCircle::new, MobCategory.MISC)
+                .sized(0f, 0f)
+                .clientTrackingRange(8)
+                .fireImmune()
+                .noLootTable()
+                .noSave()
+                .noSummon()
+        );
+
+        HostilityEntities.PREVIEW_HOSTILITY = register(
+            HostilityEntities.PREVIEW_HOSTILITY_KEY,
+            EntityType.Builder.<PreviewHostility>of(PreviewHostility::new, MobCategory.MISC)
                 .sized(0f, 0f)
                 .clientTrackingRange(8)
                 .fireImmune()

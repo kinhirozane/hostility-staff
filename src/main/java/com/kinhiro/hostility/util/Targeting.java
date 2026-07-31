@@ -35,11 +35,15 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.entity.monster.warden.AngerLevel;
 import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public final class Targeting {
@@ -83,6 +87,26 @@ public final class Targeting {
         return null;
     }
 
+    public static List<Mob> findAll(final Level level, final Vec3 pos, final float radius) {
+        final var bb = new AABB(pos.x - radius, pos.y, pos.z - radius, pos.x + radius, pos.y + radius, pos.z + radius);
+        final var mobs = new ArrayList<Mob>();
+        final var entities = level.getEntities(null, bb).stream()
+            .filter(entity -> entity instanceof Mob)
+            .map(e -> (Mob) e)
+            .toList();
+
+        for (final var entity : entities) {
+            final var dx = entity.getX() - pos.x;
+            final var dz = entity.getZ() - pos.z;
+            if (dx * dx + dz * dz > radius * radius) continue;
+            final var targeting = (Targetable) entity;
+            if (targeting.hostility_staff$targeting()) continue;
+            mobs.add(entity);
+        }
+
+        return List.copyOf(mobs);
+    }
+
     public static AABB getBoundingBoxSelectedArea(final BlockPos from, @Nullable final BlockPos to) {
         if (to == null) return new AABB(0d, 0d, 0d, 1d, 1d, 1d).move(from);
         final var minX = Math.min(from.getX(), to.getX());
@@ -106,6 +130,7 @@ public final class Targeting {
 
     public static void setAttackTarget(final Mob attacker, final LivingEntity target, final boolean both) {
         if (attacker == null || target == null) return;
+        if (target instanceof Player) return;
         increaceFollowRange(attacker);
         setTargetTo(attacker, target);
         if (target instanceof final Mob mob && both) {

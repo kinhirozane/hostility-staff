@@ -38,13 +38,13 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.NonNull;
 
-public final class Hostility extends Entity {
+public class Hostility extends Entity {
     public static final EntityDataAccessor<Float> DATA_SIZE =
         SynchedEntityData.defineId(Hostility.class, EntityDataSerializers.FLOAT);
 
-    private Mob owner;
+    public Mob owner;
 
-    public Hostility(final EntityType<Hostility> type, final Level level) {
+    public Hostility(final EntityType<? extends Hostility> type, final Level level) {
         super(type, level);
         noPhysics = true;
     }
@@ -57,44 +57,50 @@ public final class Hostility extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(final SynchedEntityData.@NonNull Builder entityData) {
+    protected final void defineSynchedData(final SynchedEntityData.@NonNull Builder entityData) {
         entityData.define(DATA_SIZE, 0.5f);
     }
 
     @Override
-    public void tick() {
+    public final void tick() {
         super.tick();
         if (owner == null) return;
         if (!level().isClientSide()) {
-            if (owner.getTarget() == null && ((Targetable) owner).hostility_staff$forcedTarget() == null) discard();
-            if (!owner.isAlive() || owner.isRemoved()) discard();
-            final var pos = new Vec3(owner.getX(), owner.getY() + owner.getBbHeight() * 1.5, owner.getZ());
-            moveRelative(owner.getSpeed(), pos);
-            addDeltaMovement(owner.getDeltaMovement());
-            setPos(pos.x, pos.y, pos.z);
+            if (shouldDiscard()) discard();
+            followOwner();
         }
     }
 
-    @Override
-    protected void readAdditionalSaveData(final @NonNull ValueInput input) {
+    protected boolean shouldDiscard() {
+        return (owner.getTarget() == null && ((Targetable) owner).hostility_staff$forcedTarget() == null)
+            || !owner.isAlive() || owner.isRemoved();
+    }
+
+    protected final void followOwner() {
+        final var pos = new Vec3(owner.getX(), owner.getY() + owner.getBbHeight() * 1.5, owner.getZ());
+        setPos(pos.x, pos.y, pos.z);
     }
 
     @Override
-    protected void addAdditionalSaveData(final @NonNull ValueOutput output) {
+    protected final void readAdditionalSaveData(final @NonNull ValueInput input) {
     }
 
     @Override
-    public boolean shouldRender(final double camX, final double camY, final double camZ) {
+    protected final void addAdditionalSaveData(final @NonNull ValueOutput output) {
+    }
+
+    @Override
+    public final boolean shouldRender(final double camX, final double camY, final double camZ) {
         return true;
     }
 
     @Override
-    public boolean shouldRenderAtSqrDistance(final double distance) {
+    public final boolean shouldRenderAtSqrDistance(final double distance) {
         return true;
     }
 
     @Override
-    public boolean hurtServer(
+    public final boolean hurtServer(
         final @NonNull ServerLevel level,
         final @NonNull DamageSource source,
         final float damage
@@ -103,10 +109,10 @@ public final class Hostility extends Entity {
     }
 
     @Override
-    public void teleportTo(final double x, final double y, final double z) {
+    public final void teleportTo(final double x, final double y, final double z) {
     }
 
     @Override
-    public void setDeltaMovement(final @NonNull Vec3 movement) {
+    public final void setDeltaMovement(final @NonNull Vec3 movement) {
     }
 }

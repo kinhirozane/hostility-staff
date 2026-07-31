@@ -15,6 +15,7 @@
         "TargetingBreeze",
         "TargetingEnderDragon",
         "TargetingLivingEntity",
+        "TargetingLookAtPlayer",
         "TargetingMob",
         "TargetingWarden",
         "TargetingWitherBoss"
