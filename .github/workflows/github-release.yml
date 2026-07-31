@@ -13,9 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: gradle
+
+      - name: Build project
+        run: ./gradlew build --no-daemon
 
       - name: Create GitHub Release from tag message
         env:
@@ -27,4 +37,4 @@ jobs:
             echo "Tag $TAG has no message (lightweight tag?). Use an annotated tag." >&2
             exit 1
           fi
-          gh release create "$TAG" --title "${TAG#v}" --notes "$BODY"
+          gh release create "$TAG" build/libs/*.jar --title "${TAG#v}" --notes "$BODY"
