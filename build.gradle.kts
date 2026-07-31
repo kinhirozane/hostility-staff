@@ -4,6 +4,7 @@ plugins {
     java
     alias(libs.plugins.fabric.loom)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.spotless.changelog)
     `maven-publish`
     idea
 }
@@ -87,6 +88,15 @@ spotless {
         endWithNewline()
         removeUnusedImports()
     }
+}
+
+spotlessChangelog {
+    tagPrefix("v")
+    commitMessage("Published {{version}}")
+    tagMessage("{{changes}}")
+    branch("master")
+    remote("origin")
+    forceNextVersion(providers.gradleProperty("mod.version").get())
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies,
